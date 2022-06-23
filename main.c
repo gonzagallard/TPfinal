@@ -2,6 +2,7 @@
 #include <stdbool.h>
 
 #include "config.h"
+#include "nave.h"
 
 int main() {
     SDL_Init(SDL_INIT_VIDEO);
@@ -17,11 +18,9 @@ int main() {
 
     // BEGIN código del alumno
     // Mi nave:
-    const float nave[][2] = {{8, 0}, {-1, 6}, {-4, 4}, {-4, 2}, {-2, 0}, {-4, -2}, {-4, -4}, {-1, -6}, {8, 0}};
     size_t nave_tam = 9;
 
     // El chorro de la nave:
-    const float chorro[][2] = {{-4, 2}, {-8, 0}, {-4, -2}};
     size_t chorro_tam = 3;
 
     bool chorro_prendido = false;
@@ -45,8 +44,13 @@ int main() {
                         break;
                     case SDLK_DOWN:
                     case SDLK_RIGHT:
+						rotar_nave(nave, 3);
+						rotar_nave(chorro, 3);
+						break;
                     case SDLK_LEFT:
-                        break;
+						rotar_nave(nave, -3);
+						rotar_nave(chorro, -3);
+                    	break;
                 }
             }
             else if (event.type == SDL_KEYUP) {
