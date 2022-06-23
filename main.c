@@ -44,12 +44,12 @@ int main() {
                         break;
                     case SDLK_DOWN:
                     case SDLK_RIGHT:
-						rotar_nave(nave, 3);
-						rotar_nave(chorro, 3);
+						rotar_nave(nave, nave_tam, 3);
+						rotar_nave(chorro,chorro_tam, 3);
 						break;
                     case SDLK_LEFT:
-						rotar_nave(nave, -3);
-						rotar_nave(chorro, -3);
+						rotar_nave(nave, nave_tam, -3);
+						rotar_nave(chorro, chorro_tam, -3);
                     	break;
                 }
             }
