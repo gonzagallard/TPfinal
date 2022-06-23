@@ -12,8 +12,14 @@ extern nave_t chorro;
 
 //void trasladar(nave_t[][2], size_t n, float dx, float dy);
 
-void rotar_nave(float nave[][2], size_t n, double grados);
+void rotar_nave(nave_t element, size_t size_element, double grados_por_seg);   
 
-//void trasladar_nave(float nave[][2], )
+int angulo_rotado(int angulo_anterior, int grados_por_seg);
+
+void trasladar_nave(nave_t element, size_t size_element, float dframe_x, float dframe_y);
+
+
+
+
 
 #endif 

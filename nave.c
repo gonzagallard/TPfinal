@@ -30,11 +30,26 @@ void rotar_nave(nave_t element, size_t n, double grados){
     rotar(element, n, rad);
 }
 
-void trasladar(float nave[][2], size_t n, float dx, float dy){
+int angulo_rotado(int angulo_ant, int grados){
+    int grad_aux = angulo_ant;
+    if(grados <= -360 || grados >= 360)
+        grados = grados % 360;
+    grad_aux += grados;
+    return grad_aux;
+}
+
+void trasladar(nave_t element, size_t n, float dx, float dy){
     for(size_t i = 0 ; i < n ; i++){ 
-        nave[i][0] += dx;
-        nave[i][1] += dy;
+        element[i][0] += dx;
+        element[i][1] += dy;
     }
+}
+
+void trasladar_nave(nave_t element, size_t n, float dframe_x, float dframe_y){
+
+
+
+    trasladar(element, n, dframe_x, dframe_y);
 }
 
 
