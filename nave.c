@@ -46,11 +46,17 @@ void trasladar(nave_t element, size_t n, float dx, float dy){
     }
 }
 
-void trasladar_nave(nave_t element, size_t n, float dframe_x, float dframe_y){
+float x, y;
+void componentes_segun_angulo(int grados, float * x, float * y){
+    double rad = grad_a_rad(grados);
+    *x = cos(rad)*0.5;
+    *y = sin(rad)*0.5;
+}
 
 
-
-    trasladar(element, n, dframe_x, dframe_y);
+void trasladar_nave(nave_t element, size_t n, int grado){
+    componentes_segun_angulo(grado, &x, &y);
+    trasladar(element, n, x, y);
 }
 
 
