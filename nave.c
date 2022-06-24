@@ -8,7 +8,7 @@ nave_t nave = {{8, 0}, {-1, 6}, {-4, 4}, {-4, 2}, {-2, 0}, {-4, -2}, {-4, -4}, {
 
 nave_t chorro = {{-4, 2}, {-8, 0}, {-4, -2}};
 
-double grad_a_rad(double grados){
+double grad_a_rad(int grados){
     return (PI/180) * grados;
 }
 
@@ -25,17 +25,18 @@ void rotar(nave_t element, size_t n, double rad){
     }
 }   
 
-void rotar_nave(nave_t element, size_t n, double grados){
+void rotar_nave(nave_t element, size_t n, int grados){
     double rad = grad_a_rad(grados);
     rotar(element, n, rad);
 }
 
 int angulo_rotado(int angulo_ant, int grados){
-    int grad_aux = angulo_ant;
-    if(grados <= -360 || grados >= 360)
-        grados = grados % 360;
+    int grad_aux = angulo_ant;    
     grad_aux += grados;
-    return grad_aux;
+    if(grad_aux < 0)
+        return grad_aux % 360 + 360;
+    else
+        return grad_aux % 360; 
 }
 
 void trasladar(nave_t element, size_t n, float dx, float dy){

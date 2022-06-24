@@ -21,7 +21,7 @@ int main() {
 
 	//delta frame x e y desplazamiento y giro
 	float frame_desp = 0;
-	double frame_giro = 0;
+	int frame_giro = 0;
     
 	// time global
 	float time_global = 0;
@@ -30,9 +30,9 @@ int main() {
 	// Mi nave:
     size_t nave_tam = 9;
 
-	int rapidez_ang = 5;
+	int rapidez_ang = 15;
 
-	double angle_nave = 0;
+	int angle_nave = 0;
 
     // El chorro de la nave:
     size_t chorro_tam = 3;
@@ -76,13 +76,13 @@ int main() {
 						rotar_nave(nave, nave_tam, -rapidez_ang);
 						rotar_nave(chorro,chorro_tam, -rapidez_ang);
 						frame_giro += rapidez_ang;
-						printf("##%.5f\n",frame_giro);
+						printf("##%d\n",frame_giro);
 						break;
                     case SDLK_LEFT:
 						rotar_nave(nave, nave_tam, rapidez_ang);
 						rotar_nave(chorro, chorro_tam, rapidez_ang);
 						frame_giro += rapidez_ang;
-						printf("##%.5f\n",frame_giro);
+						printf("##%d\n",frame_giro);
                     	break;
 					case SDLK_ESCAPE:
 						return 1;
@@ -97,13 +97,13 @@ int main() {
                         break;
 					case SDLK_RIGHT:
 						angle_nave = angulo_rotado(angle_nave, -frame_giro);
-						printf("%.5f\n",angle_nave);
+						printf("%d\n",angle_nave);
 						rotar_nave(test, test_tam, -frame_giro);
 						frame_giro = 0;
 						break;
 					case SDLK_LEFT:
 						angle_nave = angulo_rotado(angle_nave, frame_giro);
-						printf("%.5f\n",angle_nave);
+						printf("%d\n",angle_nave);
 						rotar_nave(test, test_tam, frame_giro);
 						frame_giro = 0;
 						break;
