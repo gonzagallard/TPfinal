@@ -15,7 +15,7 @@ int main() {
     SDL_CreateWindowAndRenderer(VENTANA_ANCHO, VENTANA_ALTO, 0, &window, &renderer);
     SDL_SetWindowTitle(window, "Gravitar");
 
-    int dormir = 0;
+    int dormir = 1000;   // tiempo  de retardo para que empieze
 
     // BEGIN código del alumno
 
@@ -25,7 +25,7 @@ int main() {
     
 	// time global
 	float time_global = 0;
-	float time_global_lapse = 1 / JUEGO_FPS;
+	float time_global_lapse = 1.0f / JUEGO_FPS;
 	
 	// Mi nave:
     size_t nave_tam = 9;
@@ -55,28 +55,38 @@ int main() {
     // END código del alumno
 
     unsigned int ticks = SDL_GetTicks();
+    float nave_test[9][2];
+    for(size_t i = 0; i < nave_tam; i++)
+        for(size_t j = 0; j < 2 ; j++)
+            nave_test[i][j] = nave[i][j]; 
+
+    /**/
+    size_t contador = 0;
     while(1) {
         if(SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT)
                 break;
             // BEGIN código del alumno
 			
-			time_global += time_global_lapse;   //tiempo independiente, accion  de la gravedad
-            
+			 //tiempo independiente, accion  de la gravedad
+
+
 			if (event.type == SDL_KEYDOWN) {
                 // Se apretó una tecla
                 switch(event.key.keysym.sym) {
-                    case SDLK_UP:
+                    case SDLK_LALT:
                         // Prendemos el chorro:
+                        componentes_segun_angulo(angulo_nave, &dseek_x, &dseek_y);
                         chorro_prendido = true;
-						componentes_segun_angulo(angulo_nave, &dseek_x, &dseek_y);
 						break;
-                    case SDLK_DOWN: //para recojer barriles
+                    case SDLK_LCTRL: //disparo
 						break;
-                    case SDLK_RIGHT:
-						rotar_nave(nave, nave_tam, -rapidez_ang);
-						rotar_nave(chorro,chorro_tam, -rapidez_ang);
-						angulos_girados += rapidez_ang;
+                    case SDLK_SPACE:    // escudo y recolectar 
+                        break;      
+                    case SDLK_RIGHT: 
+                        rotar_nave(nave, nave_tam, -rapidez_ang);
+				        rotar_nave(chorro,chorro_tam, -rapidez_ang);
+				        angulos_girados += rapidez_ang;   
 						break;
                     case SDLK_LEFT:
 						rotar_nave(nave, nave_tam, rapidez_ang);
@@ -90,7 +100,7 @@ int main() {
             else if (event.type == SDL_KEYUP) {
                 // Se soltó una tecla
                 switch(event.key.keysym.sym) {
-                    case SDLK_UP:
+                    case SDLK_LALT:
                         // Apagamos el chorro:
                         chorro_prendido = false;
                         break;
@@ -106,10 +116,19 @@ int main() {
 						break;
                 }
             }
+            /*
+            for(size_t i = 0; i < nave_tam; i++)
+                for(size_t j = 0; j < 2 ; j++)
+                    nave_test[i][j] = nave[i][j]; 
+            */
+            
+
+
+
+
             // END código del alumno
             continue;
         }
-
         SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00); // fondo
         SDL_RenderClear(renderer);
         SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0x00);
@@ -131,15 +150,13 @@ int main() {
 
         // Dibujamos la nave escalada por f en el centro de la pantalla:
         SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0x00);
-		seek_point_x += dseek_x;
-		seek_point_y -= dseek_y;
         for(int i = 0; i < nave_tam - 1; i++){
 			SDL_RenderDrawLine(
                 renderer,
-                nave[i][0] * f + seek_point_x,		//eje x
-                -nave[i][1] * f + seek_point_y, 		//eje y
-                nave[i+1][0] * f + seek_point_x,		//eje x
-                -nave[i+1][1] * f + seek_point_y 		//eje y
+                nave_test[i][0] * f + seek_point_x,		//eje x
+                -nave_test[i][1] * f + seek_point_y, 		//eje y 
+                nave_test[i+1][0] * f + seek_point_x,		//eje x
+                -nave_test[i+1][1] * f + seek_point_y		//eje y
             );
 		}
 
@@ -165,10 +182,13 @@ int main() {
             dormir = 0;
         }
         else if(ticks < 1000 / JUEGO_FPS)
-            SDL_Delay(1000 / JUEGO_FPS - ticks);
+            SDL_Delay(1000 / JUEGO_FPS - ticks);  // esto hace que el tiempo vaya lento
         ticks = SDL_GetTicks();
     }
 
+    
+
+  
     // BEGIN código del alumno
     // No tengo nada que destruir.
     // END código del alumno

@@ -8,6 +8,13 @@ nave_t nave = {{8, 0}, {-1, 6}, {-4, 4}, {-4, 2}, {-2, 0}, {-4, -2}, {-4, -4}, {
 
 nave_t chorro = {{-4, 2}, {-8, 0}, {-4, -2}};
 
+
+
+
+
+
+
+
 double grad_a_rad(int grados){
     return (PI/180) * grados;
 }

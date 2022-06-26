@@ -2,6 +2,7 @@
 #define NAVE_H
 
 #include <stddef.h>
+#include <stdbool.h>
 
 typedef float nave_t[][2];
 
@@ -18,6 +19,8 @@ int angulo_rotado(int angulo_anterior, int grados_por_seg);
 void componentes_segun_angulo(int grados, float * x, float * y);
 
 void trasladar_nave(nave_t element, size_t size_element, int angulo_nave);
+
+
 
 //void center_nave(nave_t element, size_t size_element, float *center_x, float *center_y)
 
