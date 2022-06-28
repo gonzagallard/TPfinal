@@ -3,7 +3,6 @@
 #include <stdio.h>
 
 #include "config.h"
-#include "nave.h"
 
 int main() {
     SDL_Init(SDL_INIT_VIDEO);
