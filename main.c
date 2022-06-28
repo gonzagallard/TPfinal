@@ -4,6 +4,68 @@
 
 #include "config.h"
 
+//prototipos nave mia 
+typedef struct{
+    float (*nave_pos)[2];
+    size_t nave_tam;
+    float (*chorro_pos)[2];
+    size_t chorro_tam;
+    bool chorro_start;
+    float vel_x;
+    float vel_y;
+}nave_t;
+
+
+void update_state(nave_t *nave, float t_lapse, float acc, bool chorro_state){
+    nave->chorro_start = chorro_state;
+    float new_vel_y = nave->vel_y - acc * t_lapse; 
+    for(size_t i = 0; i < nave->nave_tam; i++){
+        nave->nave_pos[i][1] -= new_vel_y * t_lapse;
+    }
+    for(size_t i = 0; i < nave->chorro_tam; i++){
+        nave->chorro_pos[i][1] -= new_vel_y * t_lapse;
+    }
+}
+
+
+
+void drawNave(nave_t *nave, SDL_Renderer *renderer, float f){
+
+ // Dibujamos la nave escalada por f en el centro de la pantalla:
+    SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0x00);
+    for(int i = 0; i < nave->nave_tam - 1; i++){
+		SDL_RenderDrawLine(
+        renderer,
+        nave->nave_pos[i][0] * f + VENTANA_ANCHO / 2,		
+        -nave->nave_pos[i][1] * f + VENTANA_ALTO / 2, 		
+        nave->nave_pos[i+1][0] * f + VENTANA_ANCHO / 2,		
+        -nave->nave_pos[i+1][1] * f + VENTANA_ALTO / 2 		
+        );
+	}
+
+    if(nave->chorro_start) {
+            // Dibujamos el chorro escalado por f en el centro de la pantalla:
+            SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0x00);
+            for(int i = 0; i < nave->chorro_tam - 1; i++){
+				SDL_RenderDrawLine(
+                    renderer,
+                    nave->chorro_pos[i][0] * f + VENTANA_ANCHO / 2,
+                    -nave->chorro_pos[i][1] * f + VENTANA_ALTO / 2, 
+                    nave->chorro_pos[i+1][0] * f + VENTANA_ANCHO / 2,
+                    -nave->chorro_pos[i+1][1] * f + VENTANA_ALTO / 2 
+                );
+			}
+        }
+
+
+}
+
+
+
+
+
+
+
 int main() {
     SDL_Init(SDL_INIT_VIDEO);
 
@@ -23,26 +85,27 @@ int main() {
 	int angulos_girados = 0;
     
 	// time global
-	float time_global = 0;
-	float time_global_lapse = 1 / JUEGO_FPS;
+	float time_lapse = 1.0f/JUEGO_FPS;
+    float time_global = 0;
 	
 	// Mi nave:
-    size_t nave_tam = 9;
+    float puntos[][2]= {{8, 0}, {-1, 6}, {-4, 4}, {-4, 2}, {-2, 0}, {-4, -2}, {-4, -4}, {-1, -6}, {8, 0}};
+    size_t nave_tamanio = 9;
 
 	int rapidez_ang = 5;
 
 	int angulo_nave = 0;
 
     // El chorro de la nave:
-    size_t chorro_tam = 3;
-
+    float chorro [][2]= {{-4, 2}, {-8, 0}, {-4, -2}};
+    size_t chorro_tamanio = 3;
     bool chorro_prendido = false;
 
-	//centro de rotacion y seguimiento de la nave
-	float seek_point_x = VENTANA_ANCHO / 2;
-	float seek_point_y = VENTANA_ALTO / 2;
-	float dseek_x = 0;
-	float dseek_y = 0;
+    //// BUILD NAVE
+    nave_t nave = {puntos, nave_tamanio, chorro, chorro_tamanio, chorro_prendido, 0, 0};
+
+
+
     // Queremos que todo se dibuje escalado por f:
     float f = 3;
 
@@ -59,8 +122,6 @@ int main() {
             if (event.type == SDL_QUIT)
                 break;
             // BEGIN código del alumno
-			
-			time_global += time_global_lapse;   //tiempo independiente, accion  de la gravedad
             
 			if (event.type == SDL_KEYDOWN) {
                 // Se apretó una tecla
@@ -68,20 +129,24 @@ int main() {
                     case SDLK_UP:
                         // Prendemos el chorro:
                         chorro_prendido = true;
-						componentes_segun_angulo(angulo_nave, &dseek_x, &dseek_y);
+						//componentes_segun_angulo(angulo_nave, &dseek_x, &dseek_y);
 						break;
                     case SDLK_DOWN: //para recojer barriles
 						break;
                     case SDLK_RIGHT:
-						rotar_nave(nave, nave_tam, -rapidez_ang);
+						/*
+                        rotar_nave(nave, nave_tam, -rapidez_ang);
 						rotar_nave(chorro,chorro_tam, -rapidez_ang);
 						angulos_girados += rapidez_ang;
-						break;
+						*/
+                        break;
                     case SDLK_LEFT:
-						rotar_nave(nave, nave_tam, rapidez_ang);
+						/*
+                        rotar_nave(nave, nave_tam, rapidez_ang);
 						rotar_nave(chorro, chorro_tam, rapidez_ang);
 						angulos_girados += rapidez_ang;
-                    	break;
+                    	*/
+                        break;
 					case SDLK_ESCAPE:
 						return 1;
                 }
@@ -94,15 +159,19 @@ int main() {
                         chorro_prendido = false;
                         break;
 					case SDLK_RIGHT:
-						angulo_nave = angulo_rotado(angulo_nave, -angulos_girados);
+						/*
+                        angulo_nave = angulo_rotado(angulo_nave, -angulos_girados);
 						rotar_nave(test, test_tam, -angulos_girados);
-						angulos_girados = 0;
-						break;
+				        angulos_girados = 0;
+						*/
+                        break;
 					case SDLK_LEFT:
-						angulo_nave = angulo_rotado(angulo_nave, angulos_girados);
+						/*
+                        angulo_nave = angulo_rotado(angulo_nave, angulos_girados);
 						rotar_nave(test, test_tam, angulos_girados);
 						angulos_girados = 0;
-						break;
+						*/
+                        break;
                 }
             }
             // END código del alumno
@@ -114,8 +183,14 @@ int main() {
         SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0x00);
 
         // BEGIN código del alumno
-		
-		
+        
+        time_global += time_lapse; 
+
+		update_state(&nave, time_global, -(float)G/JUEGO_FPS, chorro_prendido);
+        printf("t_lapse: %.5f\t %.5f\n",time_global,nave.nave_pos[0][1]);
+        drawNave(&nave, renderer, f);
+
+		/*
 		SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0x00);
 		for(int i = 0; i < test_tam - 1; i++){
 			SDL_RenderDrawLine(
@@ -126,35 +201,8 @@ int main() {
                 -test[i+1][1] * f + seek_point_y
 			);
 		}
-			
-
-        // Dibujamos la nave escalada por f en el centro de la pantalla:
-        SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0x00);
-		seek_point_x += dseek_x;
-		seek_point_y -= dseek_y;
-        for(int i = 0; i < nave_tam - 1; i++){
-			SDL_RenderDrawLine(
-                renderer,
-                nave[i][0] * f + seek_point_x,		//eje x
-                -nave[i][1] * f + seek_point_y, 		//eje y
-                nave[i+1][0] * f + seek_point_x,		//eje x
-                -nave[i+1][1] * f + seek_point_y 		//eje y
-            );
-		}
-
-        if(chorro_prendido) {
-            // Dibujamos el chorro escalado por f en el centro de la pantalla:
-            SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0x00);
-            for(int i = 0; i < chorro_tam - 1; i++){
-				SDL_RenderDrawLine(
-                    renderer,
-                    chorro[i][0] * f + seek_point_x,
-                    -chorro[i][1] * f + seek_point_y,
-                    chorro[i+1][0] * f + seek_point_x,
-                    -chorro[i+1][1] * f + seek_point_y
-                );
-			}
-        }
+	    */
+        
         // END código del alumno
 
         SDL_RenderPresent(renderer);
